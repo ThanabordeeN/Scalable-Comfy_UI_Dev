@@ -1,0 +1,134 @@
+{
+  "3": {
+    "inputs": {
+      "seed": 418778273789883,
+      "steps": 20,
+      "cfg": 10,
+      "sampler_name": "dpmpp_3m_sde_gpu",
+      "scheduler": "karras",
+      "denoise": 0.59,
+      "model": [
+        "4",
+        0
+      ],
+      "positive": [
+        "6",
+        0
+      ],
+      "negative": [
+        "7",
+        0
+      ],
+      "latent_image": [
+        "10",
+        0
+      ]
+    },
+    "class_type": "KSampler",
+    "_meta": {
+      "title": "KSampler"
+    }
+  },
+  "4": {
+    "inputs": {
+      "ckpt_name": "xsarchitectural_v11.ckpt"
+    },
+    "class_type": "CheckpointLoaderSimple",
+    "_meta": {
+      "title": "Load Checkpoint"
+    }
+  },
+  "6": {
+    "inputs": {
+      "text": "LG Television",
+      "clip": [
+        "4",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "Positive"
+    }
+  },
+  "7": {
+    "inputs": {
+      "text": "text, watermark",
+      "clip": [
+        "4",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode",
+    "_meta": {
+      "title": "Negative"
+    }
+  },
+  "8": {
+    "inputs": {
+      "samples": [
+        "3",
+        0
+      ],
+      "vae": [
+        "4",
+        2
+      ]
+    },
+    "class_type": "VAEDecode",
+    "_meta": {
+      "title": "VAE Decode"
+    }
+  },
+  "9": {
+    "inputs": {
+      "filename_prefix": "ComfyUI",
+      "images": [
+        "8",
+        0
+      ]
+    },
+    "class_type": "SaveImage",
+    "_meta": {
+      "title": "Save Image"
+    }
+  },
+  "10": {
+    "inputs": {
+      "amount": 4,
+      "samples": [
+        "18",
+        0
+      ]
+    },
+    "class_type": "RepeatLatentBatch",
+    "_meta": {
+      "title": "Repeat Latent Batch"
+    }
+  },
+  "17": {
+    "inputs": {
+      "image_base64": "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABvElEQVQ4EaXBQWoTYQCG4febRLpN14JOahWmiCZdCd2IFxAvYDInsJ6gR7B4gYwn8AgVpAtFnIq104boZKAguLDdVUr6f05olVJm1+cR1yQu/NrzCwWeAj3MogFRE5eZf4ws3onaz28eCQaAgCMHXkdmJ4hjLhMxMKImgU2qw10PJEaAED4VS91EUxoc7jqTGCAMVDdX1FW151zQY05ktxKlNChzx60FcqBjIATS7n1lKgsbMCAg7SbKaDDZ9TCKGFGTOAJWu4mm+r7v34ZFGzAv765okwbjwqUgFmBzPBP9JNFU47FfhcC6hIOp/pzQ7/d1zBVF4TiKeAs8tBGiPAk8UVE4dsQW4jYGw5fTwLN+oilX5KU7C6fkNrEEwWyKWlE4nrXJHegg5soH97REg68H3kBs2EiiFLW8cEybHNNhLmLYX9YbGuRjD4ERF0Tt08QDTCZhQxVFPF5dUkWDjwfOWi2e2wjYEbUPE5dATM0ie3RHKQ22x+7diPhsELUAqbYnHkqMuBAihp5Rtdr4bIZabRzOiDG9SKwzJ7DJ1paV6v0Pb8nEgXMREPhPzAljzpmqBdnasjJq4pr+AuEWzU4x7NF4AAAAAElFTkSuQmCC"
+    },
+    "class_type": "LoadImageBase64",
+    "_meta": {
+      "title": "load image from base64 string"
+    }
+  },
+  "18": {
+    "inputs": {
+      "pixels": [
+        "17",
+        0
+      ],
+      "vae": [
+        "4",
+        2
+      ]
+    },
+    "class_type": "VAEEncode",
+    "_meta": {
+      "title": "VAE Encode"
+    }
+  }
+}
