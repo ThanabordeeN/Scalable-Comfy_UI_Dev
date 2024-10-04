@@ -25,7 +25,6 @@
 # For the prompt `"Surreal dreamscape with floating islands, upside-down waterfalls, and impossible geometric structures, all bathed in a soft, ethereal light"`
 # we got this output:
 #
-# ![example comfyui image](./flux_gen_image.jpeg)
 #
 # To serve the workflow in this example as an API:
 # 1. Stand up the ComfyUI server in development mode:
@@ -34,10 +33,6 @@
 # ```
 # Note: if you're running this for the first time, it will take several minutes to build the image, since we have to download the Flux models (>20GB) to the container. Successive calls will reuse this prebuilt image.
 #
-# 2. In another terminal, run inference:
-# ```bash
-# python 06_gpu_and_ml/comfyui/comfyclient.py --dev --modal-workspace $(modal profile current) --prompt "neon green sign that says Modal"
-# ```
 #
 # The first inference will take ~1m since the container needs to launch the ComfyUI server and load Flux into memory. Successive inferences on a warm container should take a few seconds.
 #
@@ -78,16 +73,16 @@ app = modal.App(name="exep-comfyui", image=image)
 # ## Running ComfyUI interactively and as an API on Modal
 #
 # To run ComfyUI interactively, simply wrap the `comfy launch` command in a Modal Function and serve it as a web server.
-@app.function(
-    allow_concurrent_inputs=10,
-    concurrency_limit=1,
-    container_idle_timeout=30,
-    timeout=1800,
-    gpu="L4",
-)
-@modal.web_server(8000, startup_timeout=60)
-def ui():
-    subprocess.Popen("comfy launch -- --listen 0.0.0.0 --port 8000", shell=True)
+# @app.function(
+#     allow_concurrent_inputs=10,
+#     concurrency_limit=1,
+#     container_idle_timeout=2,
+#     timeout=1800,
+#     gpu="A100",
+# )
+# @modal.web_server(8000, startup_timeout=60)
+# def ui():
+#     subprocess.Popen("comfy launch -- --listen 0.0.0.0 --port 8000", shell=True)
 
 
 # Remember to **close your UI tab** when you are done developing to avoid accidental charges to your account.
@@ -103,8 +98,8 @@ def ui():
 # For more on how to run web services on Modal, check out [this guide](https://modal.com/docs/guide/webhooks).
 @app.cls(
     allow_concurrent_inputs=10,
-    container_idle_timeout=300,
-    gpu="L4",
+    container_idle_timeout=2,
+    gpu="A10G",
     mounts=[
         modal.Mount.from_local_file(
             Path(__file__).parent / "img2img_comfy.json",

@@ -32,8 +32,8 @@ with open(config_path, encoding="UTF-8") as f:
 
 # --- FastAPI App ---
 app = FastAPI(
-    title="Refine Image",
-    description="Generate a Stable Diffusion prompt based on user input and refine image.",
+    title="Image to Image ComfyUI API",
+    description="API for generating images using ComfyUI",
     version="1.0.0",
     docs_url="/docs",
 )
@@ -66,7 +66,7 @@ async def generate_prompt(receive: Receive):
     pos_prompt = prompt_info["prompt"]
     neg_prompt = prompt_info["negative_prompt"]
 
-    images_list = await generate_image(pos_prompt, neg_prompt, receive.image_base64, 0.5, receive.img_name)
+    images_list = await generate_image(pos_prompt, neg_prompt, receive.image_base64, 0.59, receive.img_name)
     data ={"images": images_list}
         
     return data
