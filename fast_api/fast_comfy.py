@@ -21,7 +21,8 @@ OUTPUT_DIR.mkdir(exist_ok=True, parents=True)
 
 
 
-model_workspace = "thanabordeen"
+model_workspace = os.getenv("MODAL_WORKSPACE", "thanabordeen")
+APP_NAME = os.getenv("APP_NAME", "COMFYUI")
 config_path = "./prompt.json"
 
 OLLAMA_HOST = os.getenv("OLLAMA_HOST", "http://localhost:11434")
@@ -76,7 +77,7 @@ async def generate_prompt(receive: Receive):
     
 async def generate_image(pos_prompt: str, neg_prompt: str, image: str, effect_rate: float, image_name: str, dev: bool = True):
 
-    url = f"https://{model_workspace}--exep-comfyui-comfyui-api{'-dev' if dev else ''}.modal.run/"
+    url = f"https://{model_workspace}--{APP_NAME}-comfyui-api{'-dev' if dev else ''}.modal.run/"
     data = {
         "pos_prompt": pos_prompt,
         "neg_prompt": neg_prompt,

@@ -1,0 +1,22 @@
+version: "3.9"
+
+services:
+  fastapi:
+    build:
+      context: ./fast_api
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - MODAL_WORKSPACE=thanabordeen  # Replace with your Modal workspace name
+      - APP_NAME=ComfyUI_IMAGE_2_IMAGE
+      - OLLAMA_HOST=http://host.docker.internal:11434  # Replace with the hostname or IP address of your Ollama server
+    depends_on:
+      - comfyui
+
+  comfyui:
+    build:
+      context: ./comfy
+      dockerfile: Dockerfile
+    environment:
+      - APP_NAME=ComfyUI_IMAGE_2_IMAGE

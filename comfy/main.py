@@ -1,52 +1,9 @@
-# ---
-# cmd: ["modal", "serve", "06_gpu_and_ml/comfyui/comfyapp.py"]
-# deploy: true
-# ---
-#
-# # Run Flux on ComfyUI interactively and as an API
-#
-# [ComfyUI](https://github.com/comfyanonymous/ComfyUI) is an open-source Stable Diffusion GUI with a graph/nodes based interface that allows you to design and execute advanced image generation pipelines.
-
-# Flux is a family of cutting-edge text-to-image models created by [black forest labs](https://huggingface.co/black-forest-labs), rapidly gaining popularity due to their exceptional image quality.
-#
-# In this example, we show you how to
-#
-# 1. run Flux on ComfyUI interactively to develop workflows
-#
-# 2. serve a Flux ComfyUI workflow as an API
-#
-# Combining the UI and the API in a single app makes it easy to iterate on your workflow even after deployment.
-# Simply head to the interactive UI, make your changes, export the JSON, and redeploy the app.
-#
-# ## Quickstart
-#
-# This example runs `workflow_api.json` in this directory, which is an adapation of [this simple FLUX.1-schnell workflow](https://openart.ai/workflows/reverentelusarca/flux-simple-workflow-schnell/40OkdaB23J2TMTXHmxxu) with an Image Resize custom node added at the end.
-#
-# For the prompt `"Surreal dreamscape with floating islands, upside-down waterfalls, and impossible geometric structures, all bathed in a soft, ethereal light"`
-# we got this output:
-#
-#
-# To serve the workflow in this example as an API:
-# 1. Stand up the ComfyUI server in development mode:
-# ```bash
-# modal serve 06_gpu_and_ml/comfyui/comfyapp.py
-# ```
-# Note: if you're running this for the first time, it will take several minutes to build the image, since we have to download the Flux models (>20GB) to the container. Successive calls will reuse this prebuilt image.
-#
-#
-# The first inference will take ~1m since the container needs to launch the ComfyUI server and load Flux into memory. Successive inferences on a warm container should take a few seconds.
-#
-# ## Setup
-#
-# First, we define the environment we need to run ComfyUI using [`comfy-cli`](https://github.com/Comfy-Org/comfy-cli). This handy tool manages the installation of ComfyUI, its dependencies, models, and custom nodes.
-
-
 import json
 import subprocess
 from pathlib import Path
 from typing import Dict
 import base64
-
+import os
 import modal
 
 image = (  # build up a Modal Image to run ComfyUI, step by step
@@ -66,35 +23,11 @@ image = (  # build up a Modal Image to run ComfyUI, step by step
     )
     # can layer additional models and custom node downloads as needed
 )
+APP_NAME = os.getenv("APP_NAME", "exep-comfyui")
 
-app = modal.App(name="exep-comfyui", image=image)
-
-
-# ## Running ComfyUI interactively and as an API on Modal
-#
-# To run ComfyUI interactively, simply wrap the `comfy launch` command in a Modal Function and serve it as a web server.
-# @app.function(
-#     allow_concurrent_inputs=10,
-#     concurrency_limit=1,
-#     container_idle_timeout=2,
-#     timeout=1800,
-#     gpu="A100",
-# )
-# @modal.web_server(8000, startup_timeout=60)
-# def ui():
-#     subprocess.Popen("comfy launch -- --listen 0.0.0.0 --port 8000", shell=True)
+app = modal.App(name=APP_NAME, image=image)
 
 
-# Remember to **close your UI tab** when you are done developing to avoid accidental charges to your account.
-# This will close the connection with the container serving ComfyUI, which will spin down based on your `container_idle_timeout` setting.
-#
-# To run an existing workflow as an API, we use Modal's class syntax to run our customized ComfyUI environment and workflow on Modal.
-#
-# Here's the basic breakdown of how we do it:
-# 1. We stand up a "headless" ComfyUI server in the background when the app starts.
-# 2. We define an `infer` method that takes in a workflow path and runs the workflow on the ComfyUI server.
-# 3. We stand up an `api` with `web_endpoint`, so that we can run our workflows as a service.
-#
 # For more on how to run web services on Modal, check out [this guide](https://modal.com/docs/guide/webhooks).
 @app.cls(
     allow_concurrent_inputs=10,
