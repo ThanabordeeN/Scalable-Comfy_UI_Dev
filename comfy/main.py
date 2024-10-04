@@ -27,12 +27,15 @@ APP_NAME = os.getenv("APP_NAME", "exep-comfyui")
 
 app = modal.App(name=APP_NAME, image=image)
 
+GPU_ID = os.getenv("GPU", "A10G")
+CONTAINER_IDLE_TIMEOUT = os.getenv("CONTAINER_IDLE_TIMEOUT", "2")
+ALLOW_CONCURRENT_INPUTS = os.getenv("ALLOW_CONCURRENT_INPUTS", "10")
 
 # For more on how to run web services on Modal, check out [this guide](https://modal.com/docs/guide/webhooks).
 @app.cls(
     allow_concurrent_inputs=10,
-    container_idle_timeout=2,
-    gpu="A10G",
+    container_idle_timeout=CONTAINER_IDLE_TIMEOUT,
+    gpu=GPU_ID,
     mounts=[
         modal.Mount.from_local_file(
             Path(__file__).parent / "img2img_comfy.json",

@@ -8,8 +8,8 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - MODAL_WORKSPACE=thanabordeen  # Replace with your Modal workspace name
-      - APP_NAME=ComfyUI_IMAGE_2_IMAGE
+      - MODAL_WORKSPACE=${MODAL_WORKSPACE}
+      - APP_NAME=${APP_NAME}
       - OLLAMA_HOST=http://host.docker.internal:11434  # Replace with the hostname or IP address of your Ollama server
     depends_on:
       - comfyui
@@ -19,4 +19,9 @@ services:
       context: ./comfy
       dockerfile: Dockerfile
     environment:
-      - APP_NAME=ComfyUI_IMAGE_2_IMAGE
+      - APP_NAME=${APP_NAME}
+      - MODAL_TOKEN_ID=${MODAL_TOKEN_ID}
+      - MODAL_TOKEN_SECRET=${MODAL_TOKEN_SECRET}
+      - GPU_ID=A10G
+      - CONTAINER_IDLE_TIMEOUT=2 # 2-2200 seconds Cost is calculated based on the time the container is running
+      - ALLOW_CONCURRENT_INPUTS=10
